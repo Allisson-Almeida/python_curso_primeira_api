@@ -43,4 +43,15 @@ def getPedidoCompra():
     return jsonify(pedidoCompra)
 
 
+
+#Uma nova rota será criada para consumir dado pelo ID
+#A estrutura da será o caminho da rota, barra, tipo e qual o parâmetro.
+@app.route('/pedidoCompra/<int:id>')
+def getPedidoCompraById(id): #função que consome dado pelo id, recebendo dentro do parêntese o parâmetro.
+    for pc in pedidoCompra: #pc a variável criada que significa pedido de compra
+        if pc['id'] == id:
+            return jsonify(pc)
+    return jsonify({'message':f'Pedido {id} não encontrado!'})
+
+
 app.run(port=5000)
