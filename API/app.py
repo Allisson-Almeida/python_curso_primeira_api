@@ -1,4 +1,5 @@
-from flask import Flask, jsonify # jsonify é uma biblioteca que se encarrega de retornar os dados em formato json
+from flask import Flask, jsonify,request 
+# jsonify é uma biblioteca que se encarrega de retornar os dados em formato json
 
 #Instanciando a classe FLASK
 app = Flask(__name__) # O python armazena um nome único a esta variável __name__
@@ -51,7 +52,34 @@ def getPedidoCompraById(id): #função que consome dado pelo id, recebendo dentr
     for pc in pedidoCompra: #pc a variável criada que significa pedido de compra
         if pc['id'] == id:
             return jsonify(pc)
-    return jsonify({'message':f'Pedido {id} não encontrado!'})
+    return jsonify({'message':f'Pedido {id} nao encontrado!'})
+
+
+#Uma nova rota criada para criar novo pedido de compra
+@app.route('/pedidoCompra', methods=['POST']) #foi utilizado o methods para restringir o tipo de endpoint a ser utilizado. POST
+def criarPedidoCompra():
+    dadoRequisicao = request.get_json() #Esta função irá pegar tudo que está no Body e armazenar na variável
+    pedido = {
+        'id': dadoRequisicao['id'],
+        'descricao': dadoRequisicao['descricao'],
+        'itens': [
+
+        ]
+    }
+    #Adcionar pedido a lista de pedidos de compra
+    pedidoCompra.append(pedido)
+
+    return jsonify(pedido)
+
+
+#Criando uma rota que retorna os itens de um determinado pedido
+@app.route('/pedidoCompra/<int:id>/itens')
+def getPedidoCompraItens(id):
+    for pc in pedidoCompra:
+        if pc['id'] == id:
+            return jsonify(pc['itens'])
+        
+    return jsonify({'message':f'Pedido {id} nao encontrado!'})
 
 
 app.run(port=5000)
