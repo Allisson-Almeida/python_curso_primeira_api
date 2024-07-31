@@ -78,8 +78,34 @@ def getPedidoCompraItens(id):
     for pc in pedidoCompra:
         if pc['id'] == id:
             return jsonify(pc['itens'])
+
+
+#Criando uma rota que adiciona itens em um determinado pedido
+@app.route('/pedidoCompra/<int:id>/itens', methods=['POST'])
+def criarPedidoCompraItens(id):
+    dadoRequisicao = request.get_json() #Esta função irá pegar tudo que está no Body e armazenar na variável
+    for pc in pedidoCompra:
+        if pc['id'] == id:
+            pc['itens'].append({
+                'id':dadoRequisicao['id'],
+                'descricao': dadoRequisicao['descricao'],
+                'preco':dadoRequisicao['preco']
+            })
+
+            return jsonify(pc)
         
     return jsonify({'message':f'Pedido {id} nao encontrado!'})
 
+
+
+#Criando uma rota que exclui pedido de compra
+@app.route('/pedidoCompra/<int:id>', methods=["DELETE"])
+def deletePedidoCompra(id):
+    for pc in pedidoCompra:
+        if pc['id'] == id:
+            pedidoCompra.remove(pc)
+            return jsonify({'message': f'Pedido {id} foi removido com sucesso!'}), 200
+    return jsonify({'message': f'Pedido {id} não encontrado!'}), 404
+        
 
 app.run(port=5000)
